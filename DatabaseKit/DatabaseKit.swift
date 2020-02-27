@@ -53,7 +53,7 @@ open class DatabseKit: NSObject {
         notifCenter.addObserver(self, selector: #selector(contextChanged(notification:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
     }
     
-    open func viewContext() -> NSManagedObjectContext {
+    @objc open func viewContext() -> NSManagedObjectContext {
         if innerViewContext == nil {
             setupPersistentStore()
         }
@@ -67,7 +67,7 @@ open class DatabseKit: NSObject {
         return innerWriterContext!
     }
     
-    open func perform(_ closure: @escaping (NSManagedObjectContext) -> ()) {
+    @objc open func perform(_ closure: @escaping (NSManagedObjectContext) -> ()) {
         let context = createPrivateContext()
         
         let run = {
