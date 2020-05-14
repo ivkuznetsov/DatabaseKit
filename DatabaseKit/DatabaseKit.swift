@@ -16,7 +16,7 @@ import os.log
 //
 //  sample Implementation:
 //
-//  let database = DatabaseKit()
+//  let database = Database()
 //
 //  database.perform { (ctx) in
 //
@@ -30,7 +30,7 @@ import os.log
 
 @objcMembers
 @objc(DKDatabaseKit)
-open class DatabseKit: NSObject {
+open class Database: NSObject {
     
     fileprivate class WeakContext {
         weak var context: NSManagedObjectContext?
@@ -139,7 +139,7 @@ open class DatabseKit: NSObject {
     }
 }
 
-fileprivate extension DatabseKit {
+fileprivate extension Database {
     
     @objc func contextChanged(notification: Notification) {
         if let context = notification.object as? NSManagedObjectContext, context == innerWriterContext {
