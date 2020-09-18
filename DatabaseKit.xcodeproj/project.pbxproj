@@ -14,6 +14,7 @@
 		D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */; };
 		D79729F1227F58110001310F /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = D79729EF227F58110001310F /* ObjC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D79729F2227F58110001310F /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = D79729F0227F58110001310F /* ObjC.m */; };
+		D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+DatabaseKit.swift"; sourceTree = "<group>"; };
 		D79729EF227F58110001310F /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
 		D79729F0227F58110001310F /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
+		D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				D77F205F1FC3418700FCCCA3 /* Info.plist */,
 				D79729EF227F58110001310F /* ObjC.h */,
 				D79729F0227F58110001310F /* ObjC.m */,
+				D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */,
 			);
 			path = DatabaseKit;
 			sourceTree = "<group>";
@@ -110,7 +113,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Ilya Kuznetsov";
 				TargetAttributes = {
 					D77F205A1FC3418700FCCCA3 = {
@@ -154,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D77F20781FC3422E00FCCCA3 /* StoreDescription.swift in Sources */,
+				D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */,
 				D77F20761FC3421F00FCCCA3 /* DatabaseKit.swift in Sources */,
 				D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */,
 				D79729F2227F58110001310F /* ObjC.m in Sources */,
@@ -189,6 +193,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -251,6 +256,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
