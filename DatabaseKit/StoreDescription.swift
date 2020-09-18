@@ -9,7 +9,8 @@
 import Foundation
 import CoreData
 
-@objc public class StoreDescription: NSObject {
+@objcMembers
+public class StoreDescription: NSObject {
     
     public var url: URL
     public var storeType = NSSQLiteStoreType
