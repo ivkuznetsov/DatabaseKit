@@ -172,10 +172,10 @@ extension NSManagedObjectContext {
                     logError(String(describing: (error as NSError).userInfo))
                     return
                 }
-                if parent != nil && parent!.hasChanges == true {
-                    parent!.performAndWait {
+                if let parent = parent, parent.hasChanges {
+                    parent.performAndWait {
                         do {
-                            try parent!.save()
+                            try parent.save()
                         } catch {
                             logError(error.localizedDescription)
                             logError(String(describing: (error as NSError).userInfo))

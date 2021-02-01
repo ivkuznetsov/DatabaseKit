@@ -34,15 +34,19 @@ open class Database: NSObject {
     
     fileprivate class WeakContext {
         weak var context: NSManagedObjectContext?
+        
+        init(_ context: NSManagedObjectContext) {
+            self.context = context
+        }
     }
     
-    private var notifCenter: NotificationCenter
+    private let notifCenter: NotificationCenter
     
-    fileprivate var storeCoordinator: NSPersistentStoreCoordinator!
-    fileprivate var serialQueue = DispatchQueue(label: "database.serialqueue")
-    fileprivate var innerViewContext: NSManagedObjectContext?
-    fileprivate var innerWriterContext: NSManagedObjectContext?
-    fileprivate var privateContextsForMerge: [WeakContext] = []
+    @Atomic fileprivate var storeCoordinator: NSPersistentStoreCoordinator!
+    fileprivate let serialQueue = DispatchQueue(label: "database.serialqueue")
+    @Atomic fileprivate var innerViewContext: NSManagedObjectContext?
+    @Atomic fileprivate var innerWriterContext: NSManagedObjectContext?
+    @Atomic fileprivate var privateContextsForMerge: [WeakContext] = []
     
     public lazy var storeDescriptions = [StoreDescription.userDataStore()]
     public var customModelBundle: Bundle?
@@ -68,20 +72,22 @@ open class Database: NSObject {
     }
     
     @objc open func perform(_ closure: @escaping (NSManagedObjectContext) -> ()) {
-        let context = createPrivateContext()
+        if storeCoordinator == nil {
+            setupPersistentStore()
+        }
         
         let run = {
+            let context = self.createPrivateContext()
+            
             context.performAndWait {
                 closure(context)
             }
         }
         
         if Thread.isMainThread {
-            DispatchQueue.global(qos: .default).async {
-                self.serialQueue.sync(execute: run)
-            }
+            serialQueue.async(execute: run)
         } else {
-            self.serialQueue.sync(execute: run)
+            serialQueue.sync(execute: run)
         }
     }
     
@@ -113,11 +119,7 @@ open class Database: NSObject {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = writerContext()
         if mergeChanges {
-            let weakContext = WeakContext()
-            weakContext.context = context
-            serialQueue.async {
-                self.privateContextsForMerge.append(weakContext)
-            }
+            _privateContextsForMerge.mutate { $0.append(WeakContext(context)) }
         }
         return context
     }
@@ -143,18 +145,20 @@ fileprivate extension Database {
     
     @objc func contextChanged(notification: Notification) {
         if let context = notification.object as? NSManagedObjectContext, context == innerWriterContext {
+            
             DispatchQueue.main.async {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
             }
-            serialQueue.async {
-                self.privateContextsForMerge = self.privateContextsForMerge.filter { (context) -> Bool in
-                    if let context = context.context {
+            
+            _privateContextsForMerge.mutate {
+                $0.removeAll {
+                    if let context = $0.context {
                         context.performAndWait {
                             context.mergeChanges(fromContextDidSave: notification)
                         }
-                        return true
+                        return false
                     }
-                    return false
+                    return true
                 }
             }
         }
@@ -186,7 +190,7 @@ fileprivate extension Database {
             innerWriterContext?.mergePolicy = NSOverwriteMergePolicy
             
             innerViewContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-            innerViewContext?.parent = innerWriterContext
+            innerViewContext?.persistentStoreCoordinator = storeCoordinator
             innerViewContext?.mergePolicy = NSRollbackMergePolicy
         }
     }
@@ -200,15 +204,13 @@ fileprivate extension Database {
     private func addStoreWith(configuration: String, toCoordinator coordinator: NSPersistentStoreCoordinator) {
         let description = storeDescriptionFor(configuration: configuration)
         
-        var options: [String : Any] = [ NSMigratePersistentStoresAutomaticallyOption : true, NSInferMappingModelAutomaticallyOption : true ]
+        var options: [String : Any] = [NSMigratePersistentStoresAutomaticallyOption : true, NSInferMappingModelAutomaticallyOption : true]
         
         if description.readOnly {
             options[NSReadOnlyPersistentStoreOption] = true
         }
         
-        if let storeOptions = description.options {
-            storeOptions.forEach({ options[$0.key] = $0.value })
-        }
+        description.options?.forEach { options[$0.key] = $0.value }
         
         do {
             try coordinator.addPersistentStore(ofType: description.storeType, configurationName: configuration, at: description.url, options: options)
