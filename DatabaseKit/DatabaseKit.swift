@@ -165,7 +165,7 @@ fileprivate extension Database {
     }
     
     private func storeDescriptionFor(configuration: String) -> StoreDescription {
-        return storeDescriptions.filter { $0.configuration == configuration }.first!
+        return storeDescriptions.first { $0.configuration == configuration }!
     }
     
     func setupPersistentStore() {
