@@ -15,6 +15,7 @@
 		D79729F1227F58110001310F /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = D79729EF227F58110001310F /* ObjC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D79729F2227F58110001310F /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = D79729F0227F58110001310F /* ObjC.m */; };
 		D7C325F125C82D57003CC17B /* AtomicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C325F025C82D57003CC17B /* AtomicProperty.swift */; };
+		D7E3DAF925CAC6E600B0C580 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */; };
 		D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		D79729EF227F58110001310F /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
 		D79729F0227F58110001310F /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
 		D7C325F025C82D57003CC17B /* AtomicProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicProperty.swift; sourceTree = "<group>"; };
+		D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,7 @@
 		D77F205D1FC3418700FCCCA3 /* DatabaseKit */ = {
 			isa = PBXGroup;
 			children = (
+				D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */,
 				D7C325F025C82D57003CC17B /* AtomicProperty.swift */,
 				D77F205E1FC3418700FCCCA3 /* DatabaseKit.h */,
 				D77F20751FC3421F00FCCCA3 /* DatabaseKit.swift */,
@@ -116,7 +119,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Ilya Kuznetsov";
 				TargetAttributes = {
 					D77F205A1FC3418700FCCCA3 = {
@@ -159,6 +162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7E3DAF925CAC6E600B0C580 /* Fetchable.swift in Sources */,
 				D77F20781FC3422E00FCCCA3 /* StoreDescription.swift in Sources */,
 				D7C325F125C82D57003CC17B /* AtomicProperty.swift in Sources */,
 				D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */,
