@@ -11,6 +11,16 @@ public protocol Fetchable {
     func update(_ dict: [AnyHashable : Any])
 }
 
+public protocol CustomId {
+    
+    static func id(from dict: [AnyHashable : Any]) -> String
+}
+
+public protocol CustomDBSearch {
+    
+    static func findObject(uid: String, ctx: NSManagedObjectContext) -> NSManagedObject?
+}
+
 public extension Fetchable {
     
     func parse<U>(_ dict: [AnyHashable : Any], _ keys: [(dbKey: ReferenceWritableKeyPath<Self, U?>, serviceKey: String)], dateConverted: ((String)->(Date?))? = nil) {
@@ -48,6 +58,10 @@ public extension Fetchable {
     }
     
     static func id(serviceObject: [AnyHashable : Any]) -> String {
+        if let item = self as? CustomId.Type {
+            return item.id(from: serviceObject)
+        }
+        
         var uid: String! = serviceObject["uid"] as? String ?? serviceObject["id"] as? String
         
         if uid == nil, let id = serviceObject["id"] as? Int64 {
@@ -107,7 +121,11 @@ public extension NSManagedObjectContext {
             
             var object: T?
             if object == nil {
-                object = findFirst(type: type, "uid == %@", uid)
+                if let type = type as? CustomDBSearch.Type {
+                    object = type.findObject(uid: uid, ctx: self) as? T
+                } else {
+                    object = findFirst(type: type, "uid == %@", uid)
+                }
             }
             
             if uid == "0" {
