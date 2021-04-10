@@ -16,11 +16,6 @@ public protocol CustomId {
     static func id(from dict: [AnyHashable : Any]) -> String
 }
 
-public protocol CustomDBSearch {
-    
-    static func findObject(uid: String, ctx: NSManagedObjectContext) -> NSManagedObject?
-}
-
 public extension Fetchable {
     
     func parse<U>(_ dict: [AnyHashable : Any], _ keys: [(dbKey: ReferenceWritableKeyPath<Self, U?>, serviceKey: String)], dateConverted: ((String)->(Date?))? = nil) {
@@ -121,11 +116,7 @@ public extension NSManagedObjectContext {
             
             var object: T?
             if object == nil {
-                if let type = type as? CustomDBSearch.Type {
-                    object = type.findObject(uid: uid, ctx: self) as? T
-                } else {
-                    object = findFirst(type: type, "uid == %@", uid)
-                }
+                object = findFirst(type: type, "uid == %@", uid)
             }
             
             if uid == "0" {
