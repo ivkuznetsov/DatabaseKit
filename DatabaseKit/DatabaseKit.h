@@ -11,7 +11,6 @@
 //! Project version number for DatabaseKit.
 FOUNDATION_EXPORT double DatabaseKitVersionNumber;
 
-#import <DatabaseKit/ObjC.h>
 //! Project version string for DatabaseKit.
 FOUNDATION_EXPORT const unsigned char DatabaseKitVersionString[];
 

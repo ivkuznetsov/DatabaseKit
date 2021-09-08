@@ -12,8 +12,6 @@
 		D77F20781FC3422E00FCCCA3 /* StoreDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F20771FC3422E00FCCCA3 /* StoreDescription.swift */; };
 		D77F207A1FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */; };
 		D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */; };
-		D79729F1227F58110001310F /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = D79729EF227F58110001310F /* ObjC.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D79729F2227F58110001310F /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = D79729F0227F58110001310F /* ObjC.m */; };
 		D7C325F125C82D57003CC17B /* AtomicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C325F025C82D57003CC17B /* AtomicProperty.swift */; };
 		D7E3DAF925CAC6E600B0C580 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */; };
 		D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */; };
@@ -27,8 +25,6 @@
 		D77F20771FC3422E00FCCCA3 /* StoreDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDescription.swift; sourceTree = "<group>"; };
 		D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+DatabaseKit.swift"; sourceTree = "<group>"; };
 		D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+DatabaseKit.swift"; sourceTree = "<group>"; };
-		D79729EF227F58110001310F /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
-		D79729F0227F58110001310F /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
 		D7C325F025C82D57003CC17B /* AtomicProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicProperty.swift; sourceTree = "<group>"; };
 		D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTransformer.swift; sourceTree = "<group>"; };
@@ -72,8 +68,6 @@
 				D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */,
 				D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */,
 				D77F205F1FC3418700FCCCA3 /* Info.plist */,
-				D79729EF227F58110001310F /* ObjC.h */,
-				D79729F0227F58110001310F /* ObjC.m */,
 				D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */,
 			);
 			path = DatabaseKit;
@@ -86,7 +80,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D79729F1227F58110001310F /* ObjC.h in Headers */,
 				D77F206C1FC3418700FCCCA3 /* DatabaseKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,7 +161,6 @@
 				D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */,
 				D77F20761FC3421F00FCCCA3 /* DatabaseKit.swift in Sources */,
 				D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */,
-				D79729F2227F58110001310F /* ObjC.m in Sources */,
 				D77F207A1FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

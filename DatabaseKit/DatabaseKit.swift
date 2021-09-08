@@ -99,16 +99,7 @@ open class Database: NSObject {
         if storeCoordinator == nil {
             setupPersistentStore()
         }
-        
-        do {
-            var objectId: NSManagedObjectID?
-            try ObjC.catchException {
-                objectId = self.storeCoordinator.managedObjectID(forURIRepresentation: uriRepresentation)
-            }
-            return objectId
-        } catch {
-            return nil
-        }
+        return self.storeCoordinator.managedObjectID(forURIRepresentation: uriRepresentation)
     }
     
     open func persistentStoreFor(configuration: String) -> NSPersistentStore? {
