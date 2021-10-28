@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ilya Kuznetsov. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for DatabaseKit.
 FOUNDATION_EXPORT double DatabaseKitVersionNumber;
