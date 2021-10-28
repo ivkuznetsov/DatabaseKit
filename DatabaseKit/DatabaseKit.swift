@@ -49,7 +49,7 @@ open class Database: NSObject {
     public lazy var storeDescriptions = [StoreDescription.userDataStore()]
     public var customModelBundle: Bundle?
 
-    public init() {
+    public override init() {
         super.init()
         NotificationCenter.default.addObserver(self, selector: #selector(contextChanged(notification:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
     }
