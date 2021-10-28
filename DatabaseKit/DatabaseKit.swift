@@ -161,19 +161,19 @@ fileprivate extension Database {
     }
     
     func setupPersistentStore() {
-        serialQueue.sync {
-            if storeCoordinator != nil { return }
+        let setup = {
+            if self.storeCoordinator != nil { return }
             
             var bundles = [Bundle.main]
             
-            if let bundle = customModelBundle {
+            if let bundle = self.customModelBundle {
                 bundles.append(bundle)
             }
             
             let objectModel = NSManagedObjectModel.mergedModel(from: bundles)!
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: objectModel)
             
-            addStoresTo(coordinator: coordinator)
+            self.addStoresTo(coordinator: coordinator)
             
             let writerContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
             writerContext.persistentStoreCoordinator = coordinator
@@ -183,9 +183,15 @@ fileprivate extension Database {
             context.persistentStoreCoordinator = coordinator
             context.mergePolicy = NSRollbackMergePolicy
             
-            storeCoordinator = coordinator
-            innerWriterContext = writerContext
-            innerViewContext = context
+            self.storeCoordinator = coordinator
+            self.innerWriterContext = writerContext
+            self.innerViewContext = context
+        }
+        
+        if Thread.isMainThread {
+            setup()
+        } else {
+            DispatchQueue.main.sync(execute: setup)
         }
     }
     
