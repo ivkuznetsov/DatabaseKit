@@ -46,6 +46,8 @@ open class Database: NSObject {
     @Atomic fileprivate var innerWriterContext: NSManagedObjectContext?
     @Atomic fileprivate var privateContextsForMerge: [WeakContext] = []
     
+    public var processUpdateNotification: ((Notification)->())?
+    
     public lazy var storeDescriptions = [StoreDescription.userDataStore()]
     public var customModelBundle: Bundle?
 
@@ -136,6 +138,7 @@ fileprivate extension Database {
             
             DispatchQueue.main.async {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
+                self.processUpdateNotification?(notification)
             }
             
             _privateContextsForMerge.mutate {
