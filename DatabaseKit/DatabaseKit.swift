@@ -40,21 +40,20 @@ open class Database: NSObject {
         }
     }
     
-    private let notifCenter: NotificationCenter
-    
     @Atomic fileprivate var storeCoordinator: NSPersistentStoreCoordinator!
     fileprivate let serialQueue = DispatchQueue(label: "database.serialqueue")
     @Atomic fileprivate var innerViewContext: NSManagedObjectContext?
     @Atomic fileprivate var innerWriterContext: NSManagedObjectContext?
     @Atomic fileprivate var privateContextsForMerge: [WeakContext] = []
     
+    public var processUpdateNotification: ((Notification)->())?
+    
     public lazy var storeDescriptions = [StoreDescription.userDataStore()]
     public var customModelBundle: Bundle?
 
-    public init(notifCenter: NotificationCenter = NotificationCenter.default) {
-        self.notifCenter = notifCenter
+    public override init() {
         super.init()
-        notifCenter.addObserver(self, selector: #selector(contextChanged(notification:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(contextChanged(notification:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
     }
     
     @objc open func viewContext() -> NSManagedObjectContext {
@@ -99,16 +98,7 @@ open class Database: NSObject {
         if storeCoordinator == nil {
             setupPersistentStore()
         }
-        
-        do {
-            var objectId: NSManagedObjectID?
-            try ObjC.catchException {
-                objectId = self.storeCoordinator.managedObjectID(forURIRepresentation: uriRepresentation)
-            }
-            return objectId
-        } catch {
-            return nil
-        }
+        return self.storeCoordinator.managedObjectID(forURIRepresentation: uriRepresentation)
     }
     
     open func persistentStoreFor(configuration: String) -> NSPersistentStore? {
@@ -137,7 +127,7 @@ open class Database: NSObject {
     }
     
     deinit {
-        notifCenter.removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -148,6 +138,7 @@ fileprivate extension Database {
             
             DispatchQueue.main.async {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
+                self.processUpdateNotification?(notification)
             }
             
             _privateContextsForMerge.mutate {
@@ -173,25 +164,37 @@ fileprivate extension Database {
     }
     
     func setupPersistentStore() {
-        serialQueue.sync {
+        let setup = {
+            if self.storeCoordinator != nil { return }
+            
             var bundles = [Bundle.main]
             
-            if let bundle = customModelBundle {
+            if let bundle = self.customModelBundle {
                 bundles.append(bundle)
             }
             
             let objectModel = NSManagedObjectModel.mergedModel(from: bundles)!
-            storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: objectModel)
+            let coordinator = NSPersistentStoreCoordinator(managedObjectModel: objectModel)
             
-            addStoresTo(coordinator: storeCoordinator)
+            self.addStoresTo(coordinator: coordinator)
             
-            innerWriterContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            innerWriterContext?.persistentStoreCoordinator = storeCoordinator
-            innerWriterContext?.mergePolicy = NSOverwriteMergePolicy
+            let writerContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+            writerContext.persistentStoreCoordinator = coordinator
+            writerContext.mergePolicy = NSOverwriteMergePolicy
             
-            innerViewContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-            innerViewContext?.persistentStoreCoordinator = storeCoordinator
-            innerViewContext?.mergePolicy = NSRollbackMergePolicy
+            let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+            context.persistentStoreCoordinator = coordinator
+            context.mergePolicy = NSRollbackMergePolicy
+            
+            self.storeCoordinator = coordinator
+            self.innerWriterContext = writerContext
+            self.innerViewContext = context
+        }
+        
+        if Thread.isMainThread {
+            setup()
+        } else {
+            DispatchQueue.main.sync(execute: setup)
         }
     }
     
