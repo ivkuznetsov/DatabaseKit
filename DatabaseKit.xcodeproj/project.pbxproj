@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D7284C052736A6030029BF7E /* CodableTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7284C042736A6030029BF7E /* CodableTransformer.swift */; };
 		D77F206C1FC3418700FCCCA3 /* DatabaseKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D77F205E1FC3418700FCCCA3 /* DatabaseKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D77F20761FC3421F00FCCCA3 /* DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F20751FC3421F00FCCCA3 /* DatabaseKit.swift */; };
 		D77F20781FC3422E00FCCCA3 /* StoreDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F20771FC3422E00FCCCA3 /* StoreDescription.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D7284C042736A6030029BF7E /* CodableTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableTransformer.swift; sourceTree = "<group>"; };
 		D77F205B1FC3418700FCCCA3 /* DatabaseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DatabaseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D77F205E1FC3418700FCCCA3 /* DatabaseKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseKit.h; sourceTree = "<group>"; };
 		D77F205F1FC3418700FCCCA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				D79729EF227F58110001310F /* ObjC.h */,
 				D79729F0227F58110001310F /* ObjC.m */,
 				D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */,
+				D7284C042736A6030029BF7E /* CodableTransformer.swift */,
 			);
 			path = DatabaseKit;
 			sourceTree = "<group>";
@@ -170,6 +173,7 @@
 				D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */,
 				D79729F2227F58110001310F /* ObjC.m in Sources */,
 				D77F207A1FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift in Sources */,
+				D7284C052736A6030029BF7E /* CodableTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
