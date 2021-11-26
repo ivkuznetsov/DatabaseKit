@@ -46,7 +46,7 @@ open class Database: NSObject {
     @Atomic fileprivate var innerWriterContext: NSManagedObjectContext?
     @Atomic fileprivate var privateContextsForMerge: [WeakContext] = []
     
-    public var processUpdateNotification: ((Notification)->())?
+    public var processUpdateNotification: ((/*classes*/ Set<String>, /*created URIs*/ Set<URL>, /*updated URIs*/ Set<URL>)->())?
     
     public lazy var storeDescriptions = [StoreDescription.userDataStore()]
     public var customModelBundle: Bundle?
@@ -136,9 +136,26 @@ fileprivate extension Database {
     @objc func contextChanged(notification: Notification) {
         if let context = notification.object as? NSManagedObjectContext, context == innerWriterContext {
             
+            var classes = Set<String>()
+            var createdSet = Set<URL>()
+            var updatedSet = Set<URL>()
+            
+            if let inserted = notification.userInfo?["inserted"] as? Set<NSManagedObject>, inserted.count > 0 {
+                createdSet = Set(inserted.map {
+                    classes.insert(String(describing: type(of: $0)))
+                    return $0.objectID.uriRepresentation()
+                })
+            }
+            if let updated = notification.userInfo?["updated"] as? Set<NSManagedObject>, updated.count > 0 {
+                updatedSet = Set(updated.map {
+                    classes.insert(String(describing: type(of: $0)))
+                    return $0.objectID.uriRepresentation()
+                })
+            }
+            
             DispatchQueue.main.async {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
-                self.processUpdateNotification?(notification)
+                self.processUpdateNotification?(classes, createdSet, updatedSet)
             }
             
             _privateContextsForMerge.mutate {
