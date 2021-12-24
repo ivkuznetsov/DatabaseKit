@@ -82,11 +82,71 @@ open class Database: NSObject {
                 closure(context)
             }
         }
-        
+        performOnChangeQueue(run)
+    }
+    
+    public func performOnChangeQueue(_ closure: @escaping ()->()) {
         if Thread.isMainThread {
-            serialQueue.async(execute: run)
+            serialQueue.async(execute: closure)
         } else {
-            serialQueue.sync(execute: run)
+            serialQueue.sync(execute: closure)
+        }
+    }
+    
+    public func onPrivate(_ closure: (NSManagedObjectContext)->()) {
+        let ctx = createPrivateContext()
+        ctx.performAndWait {
+            closure(ctx)
+        }
+    }
+    
+    @discardableResult
+    func onPrivate<T>(_ closure: (NSManagedObjectContext)->T?) -> T? {
+        let ctx = createPrivateContext()
+        var result: T?
+        ctx.performAndWait {
+            result = closure(ctx)
+        }
+        return result
+    }
+    
+    public func onPrivateAsync(_ closure: @escaping (NSManagedObjectContext)->()) {
+        let ctx = createPrivateContext()
+        ctx.perform {
+            closure(ctx)
+        }
+    }
+    
+    public func onPrivateWith<U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->()) {
+        let ctx = createPrivateContext()
+        let objectId = object.objectID
+        ctx.performAndWait {
+            if let object = ctx.find(type: U.self, objectId: objectId) {
+                closure(object, ctx)
+            }
+        }
+    }
+    
+    @discardableResult
+    public func onPrivateWith<T, U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->T?) -> T? {
+        let ctx = createPrivateContext()
+        var result: T?
+        let objectId = object.objectID
+        ctx.performAndWait {
+            if let object = ctx.find(type: U.self, objectId: objectId) {
+                result = closure(object, ctx)
+            }
+        }
+        return result
+    }
+    
+    public func performWith<T: NSManagedObject>(_ object: T, closure: @escaping (T, NSManagedObjectContext)->()) {
+        let objectId = object.objectID
+        perform { ctx in
+            if let object = ctx.find(type: T.self, objectId: objectId) {
+                closure(object, ctx)
+                ctx.saveAll()
+            }
         }
     }
     
@@ -153,16 +213,16 @@ fileprivate extension Database {
                 })
             }
             
-            DispatchQueue.main.async {
+            performOnMain {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
                 self.processUpdateNotification?(classes, createdSet, updatedSet)
             }
             
             _privateContextsForMerge.mutate {
                 $0.removeAll {
-                    if let context = $0.context {
-                        context.performAndWait {
-                            context.mergeChanges(fromContextDidSave: notification)
+                    if let mergeContext = $0.context, context.savingChild != mergeContext {
+                        mergeContext.performAndWait {
+                            mergeContext.mergeChanges(fromContextDidSave: notification)
                         }
                         return false
                     }
@@ -208,10 +268,14 @@ fileprivate extension Database {
             self.innerViewContext = context
         }
         
+        performOnMain { setup() }
+    }
+    
+    private func performOnMain(_ block: ()->()) {
         if Thread.isMainThread {
-            setup()
+            block()
         } else {
-            DispatchQueue.main.sync(execute: setup)
+            DispatchQueue.main.sync(execute: block)
         }
     }
     

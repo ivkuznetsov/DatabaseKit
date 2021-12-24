@@ -160,6 +160,13 @@ extension NSManagedObjectContext {
         return nil
     }
     
+    private static var savingContextKey = "savingContext"
+    
+    var savingChild: NSManagedObjectContext? {
+        get { objc_getAssociatedObject(self, &NSManagedObjectContext.savingContextKey) as? NSManagedObjectContext }
+        set { objc_setAssociatedObject(self, &NSManagedObjectContext.savingContextKey, newValue, .OBJC_ASSOCIATION_RETAIN) }
+    }
+    
     @objc public func saveAll() {
         precondition(concurrencyType != .mainQueueConcurrencyType, "View context cannot be saved")
         
@@ -175,7 +182,9 @@ extension NSManagedObjectContext {
                 if let parent = parent, parent.hasChanges {
                     parent.performAndWait {
                         do {
+                            parent.savingChild = self
                             try parent.save()
+                            parent.savingChild = nil
                         } catch {
                             logError(error.localizedDescription)
                             logError(String(describing: (error as NSError).userInfo))
