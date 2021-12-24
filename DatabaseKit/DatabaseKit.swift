@@ -101,7 +101,7 @@ open class Database: NSObject {
     }
     
     @discardableResult
-    func onPrivate<T>(_ closure: (NSManagedObjectContext)->T?) -> T? {
+    public func onPrivate<T>(_ closure: (NSManagedObjectContext)->T?) -> T? {
         let ctx = createPrivateContext()
         var result: T?
         ctx.performAndWait {
