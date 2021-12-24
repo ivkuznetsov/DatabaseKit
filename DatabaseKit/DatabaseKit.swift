@@ -213,22 +213,19 @@ fileprivate extension Database {
                 })
             }
             
-            performOnMain {
+            DispatchQueue.main.async {
                 self.innerViewContext?.mergeChanges(fromContextDidSave: notification)
                 self.processUpdateNotification?(classes, createdSet, updatedSet)
             }
             
-            _privateContextsForMerge.mutate {
-                $0.removeAll {
-                    if let mergeContext = $0.context, context.savingChild != mergeContext {
-                        mergeContext.performAndWait {
-                            mergeContext.mergeChanges(fromContextDidSave: notification)
-                        }
-                        return false
+            privateContextsForMerge.forEach {
+                if let mergeContext = $0.context, context.savingChild != mergeContext {
+                    mergeContext.perform {
+                        mergeContext.mergeChanges(fromContextDidSave: notification)
                     }
-                    return true
                 }
             }
+            _privateContextsForMerge.mutate { $0.removeAll { $0.context == nil } }
         }
     }
     
