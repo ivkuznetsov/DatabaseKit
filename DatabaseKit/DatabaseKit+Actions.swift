@@ -9,12 +9,26 @@
 import Foundation
 import CoreData
 
+public protocol WithObjectId {}
+
+public extension WithObjectId where Self: NSManagedObject {
+    
+    var getObjectId: ObjectId<Self> { ObjectId(self) }
+}
+
+extension NSManagedObject: WithObjectId { }
+
 public struct ObjectId<T: NSManagedObject> {
     public let objectId: NSManagedObjectID
     
     public init(_ object: T) {
         objectId = object.permanentObjectID()
     }
+}
+
+public extension Sequence where Element: NSManagedObject {
+    
+    var ids: [ObjectId<Element>] { map { $0.getObjectId } }
 }
 
 public extension Database {
