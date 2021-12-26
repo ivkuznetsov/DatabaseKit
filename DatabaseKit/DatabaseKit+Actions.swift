@@ -186,19 +186,19 @@ public extension Database {
         fetchWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
-    func editLazy(_ closure: @escaping (NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
+    func editLazy(_ closure: @escaping (NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
         let context = self.createPrivateContext(mergeChanges: true)
         context.perform {
             closure(context, { saved in
                 self.onEditQueue {
                     context.saveAll()
-                    DispatchQueue.main.async(execute: saved)
+                    DispatchQueue.main.async(execute: { saved?() })
                 }
             })
         }
     }
     
-    func editLazyWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
+    func editLazyWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
         editLazy { ctx, save in
             if let object = ctx.get(objectId) {
                 closure(object, ctx, save)
@@ -206,7 +206,7 @@ public extension Database {
         }
     }
     
-    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
+    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
         editLazy { ctx, save in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 closure(object1, object2, ctx, save)
@@ -214,11 +214,11 @@ public extension Database {
         }
     }
     
-    func editLazyWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
+    func editLazyWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
         editLazyWith(ObjectId(object), closure: closure)
     }
     
-    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
+    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
         editLazyWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
 }
