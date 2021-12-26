@@ -186,20 +186,19 @@ public extension Database {
         fetchWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
-    func editLazy(_ closure: @escaping (NSManagedObjectContext, _ save: @escaping ()->())->()) {
+    func editLazy(_ closure: @escaping (NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
         let context = self.createPrivateContext(mergeChanges: true)
         context.perform {
-            closure(context, {
-                if Thread.isMainThread {
-                    self.onEditQueue { context.saveAll() }
-                } else {
-                    self.onEditQueueSync { context.saveAll() }
+            closure(context, { saved in
+                self.onEditQueue {
+                    context.saveAll()
+                    DispatchQueue.main.async(execute: saved)
                 }
             })
         }
     }
     
-    func editLazyWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping ()->())->()) {
+    func editLazyWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
         editLazy { ctx, save in
             if let object = ctx.get(objectId) {
                 closure(object, ctx, save)
@@ -207,7 +206,7 @@ public extension Database {
         }
     }
     
-    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping ()->())->()) {
+    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
         editLazy { ctx, save in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 closure(object1, object2, ctx, save)
@@ -215,11 +214,11 @@ public extension Database {
         }
     }
     
-    func editLazyWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping ()->())->()) {
+    func editLazyWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
         editLazyWith(ObjectId(object), closure: closure)
     }
     
-    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping ()->())->()) {
+    func editLazyWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, NSManagedObjectContext, _ save: @escaping (_ saved: @escaping()->())->())->()) {
         editLazyWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
 }
