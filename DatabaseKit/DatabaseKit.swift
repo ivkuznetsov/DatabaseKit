@@ -56,25 +56,22 @@ open class Database: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(contextChanged(notification:)), name: Notification.Name.NSManagedObjectContextDidSave, object: nil)
     }
     
-    @objc open func viewContext() -> NSManagedObjectContext {
+    @objc open var viewContext: NSManagedObjectContext {
         if innerViewContext == nil {
             setupPersistentStore()
         }
         return innerViewContext!
     }
     
-    private func writerContext() -> NSManagedObjectContext {
+    private var writerContext: NSManagedObjectContext {
         if innerWriterContext == nil {
             setupPersistentStore()
         }
         return innerWriterContext!
     }
     
+    ///Performs closure with private context on database editing queue. Syncronously if it's performed on background queu and asynchrously in case of main queue.
     @objc open func perform(_ closure: @escaping (NSManagedObjectContext) -> ()) {
-        if storeCoordinator == nil {
-            setupPersistentStore()
-        }
-        
         let run = {
             let context = self.createPrivateContext()
             
@@ -82,72 +79,20 @@ open class Database: NSObject {
                 closure(context)
             }
         }
-        performOnChangeQueue(run)
-    }
-    
-    public func performOnChangeQueue(_ closure: @escaping ()->()) {
         if Thread.isMainThread {
-            serialQueue.async(execute: closure)
+            onEditQueueSync(run)
         } else {
-            serialQueue.sync(execute: closure)
-        }
-    }
-    
-    public func onPrivate(_ closure: (NSManagedObjectContext)->()) {
-        let ctx = createPrivateContext()
-        ctx.performAndWait {
-            closure(ctx)
+            onEditQueue(run)
         }
     }
     
     @discardableResult
-    public func onPrivate<T>(_ closure: (NSManagedObjectContext)->T?) -> T? {
-        let ctx = createPrivateContext()
-        var result: T?
-        ctx.performAndWait {
-            result = closure(ctx)
-        }
-        return result
+    func onEditQueueSync<T>(_ closure: ()->T) -> T {
+        serialQueue.sync(execute: closure)
     }
     
-    public func onPrivateAsync(_ closure: @escaping (NSManagedObjectContext)->()) {
-        let ctx = createPrivateContext()
-        ctx.perform {
-            closure(ctx)
-        }
-    }
-    
-    public func onPrivateWith<U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->()) {
-        let ctx = createPrivateContext()
-        let objectId = object.objectID
-        ctx.performAndWait {
-            if let object = ctx.find(type: U.self, objectId: objectId) {
-                closure(object, ctx)
-            }
-        }
-    }
-    
-    @discardableResult
-    public func onPrivateWith<T, U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->T?) -> T? {
-        let ctx = createPrivateContext()
-        var result: T?
-        let objectId = object.objectID
-        ctx.performAndWait {
-            if let object = ctx.find(type: U.self, objectId: objectId) {
-                result = closure(object, ctx)
-            }
-        }
-        return result
-    }
-    
-    public func performWith<T: NSManagedObject>(_ object: T, closure: @escaping (T, NSManagedObjectContext)->()) {
-        let objectId = object.objectID
-        perform { ctx in
-            if let object = ctx.find(type: T.self, objectId: objectId) {
-                closure(object, ctx)
-                ctx.saveAll()
-            }
-        }
+    func onEditQueue(_ closure: @escaping ()->()) {
+        serialQueue.async(execute: closure)
     }
     
     open func reset() {
@@ -166,8 +111,12 @@ open class Database: NSObject {
     }
     
     open func createPrivateContext(mergeChanges: Bool) -> NSManagedObjectContext {
+        if storeCoordinator == nil {
+            setupPersistentStore()
+        }
+        
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.parent = writerContext()
+        context.parent = writerContext
         if mergeChanges {
             _privateContextsForMerge.mutate { $0.append(WeakContext(context)) }
         }

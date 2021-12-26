@@ -30,6 +30,10 @@ public extension NSManagedObject {
         return objectId
     }
     
+    func getObjectID<T: NSManagedObject>() -> ObjectId<T> {
+        ObjectId.init(type: type(of: getSelfObject), objectId: permanentObjectID())
+    }
+    
     class func idsWith<T: Sequence>(objects: T) -> [NSManagedObjectID] where T.Element: NSManagedObject {
         return objects.map { return $0.permanentObjectID() }
     }
@@ -37,6 +41,11 @@ public extension NSManagedObject {
     class func uriWith<T: Sequence>(ids: T) -> [URL] where T.Element: NSManagedObjectID {
         return ids.map { return $0.uriRepresentation() }
     }    
+}
+
+public extension Sequence where Element: NSManagedObject {
+    
+    var ids: [ObjectId<Element>] { map { $0.getObjectID() } }
 }
 
 //ObjC support

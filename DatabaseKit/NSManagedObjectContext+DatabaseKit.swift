@@ -160,6 +160,14 @@ extension NSManagedObjectContext {
         return nil
     }
     
+    public func get<T: Sequence, U: NSManagedObject>(_ ids: T) -> [U] where T.Element == ObjectId<U> {
+        return ids.compactMap { return get($0) }
+    }
+    
+    public func get<T: NSManagedObject>(_ objectId: ObjectId<T>) -> T? {
+        find(type: T.self, objectId: objectId.objectId)
+    }
+    
     private static var savingContextKey = "savingContext"
     
     var savingChild: NSManagedObjectContext? {

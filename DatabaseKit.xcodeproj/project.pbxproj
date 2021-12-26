@@ -14,6 +14,7 @@
 		D77F207A1FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */; };
 		D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */; };
 		D7C325F125C82D57003CC17B /* AtomicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C325F025C82D57003CC17B /* AtomicProperty.swift */; };
+		D7C679E62778950E0098B90B /* DatabaseKit+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C679E52778950E0098B90B /* DatabaseKit+Actions.swift */; };
 		D7E3DAF925CAC6E600B0C580 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */; };
 		D7E588B22514B27900D2F6EE /* DefaultTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 		D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+DatabaseKit.swift"; sourceTree = "<group>"; };
 		D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+DatabaseKit.swift"; sourceTree = "<group>"; };
 		D7C325F025C82D57003CC17B /* AtomicProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicProperty.swift; sourceTree = "<group>"; };
+		D7C679E52778950E0098B90B /* DatabaseKit+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DatabaseKit+Actions.swift"; sourceTree = "<group>"; };
 		D7E3DAF825CAC6E600B0C580 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		D7E588B12514B27900D2F6EE /* DefaultTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,6 +68,7 @@
 				D7C325F025C82D57003CC17B /* AtomicProperty.swift */,
 				D77F205E1FC3418700FCCCA3 /* DatabaseKit.h */,
 				D77F20751FC3421F00FCCCA3 /* DatabaseKit.swift */,
+				D7C679E52778950E0098B90B /* DatabaseKit+Actions.swift */,
 				D77F20771FC3422E00FCCCA3 /* StoreDescription.swift */,
 				D77F20791FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift */,
 				D7949B061FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift */,
@@ -165,6 +168,7 @@
 				D77F20761FC3421F00FCCCA3 /* DatabaseKit.swift in Sources */,
 				D7949B071FC61796000D2C4F /* NSManagedObjectContext+DatabaseKit.swift in Sources */,
 				D77F207A1FC3423E00FCCCA3 /* NSManagedObject+DatabaseKit.swift in Sources */,
+				D7C679E62778950E0098B90B /* DatabaseKit+Actions.swift in Sources */,
 				D7284C052736A6030029BF7E /* CodableTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
