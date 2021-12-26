@@ -48,7 +48,7 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T) -> T? {
+    func editSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T?) -> T? {
         return editSync { ctx in
             if let object = ctx.get(objectId) {
                 return closure(object, ctx)
@@ -58,7 +58,7 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T) -> T? {
+    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
         return editSync { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 return closure(object1, object2, ctx)
@@ -68,12 +68,12 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->T) -> T? {
+    func editSyncWith<T, U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->T?) -> T? {
         editSyncWith(ObjectId(object), closure: closure)
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: (U, R, NSManagedObjectContext)->T) -> T? {
+    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
         editSyncWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
@@ -122,7 +122,7 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T?) -> T? {
         return fetchSync { ctx in
             if let object = ctx.get(objectId) {
                 return closure(object, ctx)
@@ -132,7 +132,7 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
         return fetchSync { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 return closure(object1, object2, ctx)
@@ -142,7 +142,7 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext)->T) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext)->T?) -> T? {
         fetchSyncWith(ObjectId(object), closure: closure)
     }
     
