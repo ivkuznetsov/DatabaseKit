@@ -34,7 +34,7 @@ public extension Sequence where Element: NSManagedObject {
 public extension Database {
     
     @discardableResult
-    func editSync<T>(_ closure: (NSManagedObjectContext)->T) -> T {
+    func editSync<T>(_ closure: (_ ctx: NSManagedObjectContext)->T) -> T {
         return onEditQueueSync {
             let context = self.createPrivateContext()
             
@@ -48,7 +48,7 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T?) -> T? {
+    func editSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, _ ctx: NSManagedObjectContext)->T?) -> T? {
         return editSync { ctx in
             if let object = ctx.get(objectId) {
                 return closure(object, ctx)
@@ -58,7 +58,7 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
+    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, _ ctx: NSManagedObjectContext)->T?) -> T? {
         return editSync { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 return closure(object1, object2, ctx)
@@ -68,16 +68,16 @@ public extension Database {
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject>(_ object: U, closure: (U, NSManagedObjectContext)->T?) -> T? {
+    func editSyncWith<T, U: NSManagedObject>(_ object: U, closure: (U, _ ctx: NSManagedObjectContext)->T?) -> T? {
         editSyncWith(ObjectId(object), closure: closure)
     }
     
     @discardableResult
-    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
+    func editSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: (U, R, _ ctx: NSManagedObjectContext)->T?) -> T? {
         editSyncWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
-    func edit(_ closure: @escaping (NSManagedObjectContext)->()) {
+    func edit(_ closure: @escaping (_ ctx: NSManagedObjectContext)->()) {
         onEditQueue {
             let context = self.createPrivateContext()
             context.performAndWait {
@@ -87,7 +87,7 @@ public extension Database {
         }
     }
     
-    func editWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext)->()) {
+    func editWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, _ ctx: NSManagedObjectContext)->()) {
         edit { ctx in
             if let object = ctx.get(objectId) {
                 closure(object, ctx)
@@ -95,7 +95,7 @@ public extension Database {
         }
     }
     
-    func editWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext)->()) {
+    func editWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, _ ctx: NSManagedObjectContext)->()) {
         edit { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 closure(object1, object2, ctx)
@@ -103,16 +103,16 @@ public extension Database {
         }
     }
     
-    func editWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext)->()) {
+    func editWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, _ ctx: NSManagedObjectContext)->()) {
         editWith(ObjectId(object), closure: closure)
     }
     
-    func editWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, NSManagedObjectContext)->()) {
+    func editWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, object2: R, closure: @escaping (U, R, _ ctx: NSManagedObjectContext)->()) {
         editWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
     @discardableResult
-    func fetchSync<T>(_ closure: (NSManagedObjectContext)->T) -> T {
+    func fetchSync<T>(_ closure: (_ ctx: NSManagedObjectContext)->T) -> T {
         let ctx = createPrivateContext()
         var result: T!
         ctx.performAndWait {
@@ -122,7 +122,7 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, NSManagedObjectContext)->T?) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject>(_ objectId: ObjectId<U>, closure: (U, _ ctx: NSManagedObjectContext)->T?) -> T? {
         return fetchSync { ctx in
             if let object = ctx.get(objectId) {
                 return closure(object, ctx)
@@ -132,7 +132,7 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, NSManagedObjectContext)->T?) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: (U, R, _ ctx: NSManagedObjectContext)->T?) -> T? {
         return fetchSync { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 return closure(object1, object2, ctx)
@@ -142,23 +142,23 @@ public extension Database {
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext)->T?) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject>(_ object: U, closure: @escaping (U, _ ctx: NSManagedObjectContext)->T?) -> T? {
         fetchSyncWith(ObjectId(object), closure: closure)
     }
     
     @discardableResult
-    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: @escaping (U, R, NSManagedObjectContext)->T) -> T? {
+    func fetchSyncWith<T, U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: @escaping (U, R, _ ctx: NSManagedObjectContext)->T) -> T? {
         fetchSyncWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
-    func fetch(_ closure: @escaping (NSManagedObjectContext)->()) {
+    func fetch(_ closure: @escaping (_ ctx: NSManagedObjectContext)->()) {
         let ctx = createPrivateContext()
         ctx.perform {
             closure(ctx)
         }
     }
     
-    func fetchWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, NSManagedObjectContext)->()) {
+    func fetchWith<U: NSManagedObject>(_ objectId: ObjectId<U>, closure: @escaping (U, _ ctx: NSManagedObjectContext)->()) {
         fetch { ctx in
             if let object = ctx.get(objectId) {
                 closure(object, ctx)
@@ -166,7 +166,7 @@ public extension Database {
         }
     }
     
-    func fetchWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, NSManagedObjectContext)->()) {
+    func fetchWith<U: NSManagedObject, R: NSManagedObject>(_ objectId1: ObjectId<U>, _ objectId2: ObjectId<R>, closure: @escaping (U, R, _ ctx: NSManagedObjectContext)->()) {
         fetch { ctx in
             if let object1 = ctx.get(objectId1), let object2 = ctx.get(objectId2) {
                 closure(object1, object2, ctx)
@@ -174,11 +174,11 @@ public extension Database {
         }
     }
     
-    func fetchWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, NSManagedObjectContext)->()) {
+    func fetchWith<U: NSManagedObject>(_ object: U, closure: @escaping (U, _ ctx: NSManagedObjectContext)->()) {
         fetchWith(ObjectId(object), closure: closure)
     }
     
-    func fetchWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: @escaping (U, R, NSManagedObjectContext)->()) {
+    func fetchWith<U: NSManagedObject, R: NSManagedObject>(_ object1: U, _ object2: R, closure: @escaping (U, R, _ ctx: NSManagedObjectContext)->()) {
         fetchWith(ObjectId(object1), ObjectId(object2), closure: closure)
     }
     
