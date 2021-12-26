@@ -18,11 +18,15 @@ public extension WithObjectId where Self: NSManagedObject {
 
 extension NSManagedObject: WithObjectId { }
 
-public struct ObjectId<T: NSManagedObject> {
+public struct ObjectId<T: NSManagedObject>: Hashable {
     public let objectId: NSManagedObjectID
     
     public init(_ object: T) {
         objectId = object.permanentObjectID()
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(objectId)
     }
 }
 
