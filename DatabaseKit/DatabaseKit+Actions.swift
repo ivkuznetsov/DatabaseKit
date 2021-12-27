@@ -187,14 +187,16 @@ public extension Database {
     }
     
     func editLazy(_ closure: @escaping (NSManagedObjectContext, _ save: @escaping (_ saved: (()->())?)->())->()) {
-        let context = self.createPrivateContext(mergeChanges: true)
-        context.perform {
-            closure(context, { saved in
-                self.onEditQueue {
-                    context.saveAll()
-                    DispatchQueue.main.async(execute: { saved?() })
-                }
-            })
+        onEditQueue {
+            let context = self.createPrivateContext(mergeChanges: true)
+            context.perform {
+                closure(context, { saved in
+                    self.onEditQueue {
+                        context.saveAll()
+                        DispatchQueue.main.async(execute: { saved?() })
+                    }
+                })
+            }
         }
     }
     
