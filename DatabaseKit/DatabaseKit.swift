@@ -80,9 +80,9 @@ open class Database: NSObject {
             }
         }
         if Thread.isMainThread {
-            onEditQueueSync(run)
-        } else {
             onEditQueue(run)
+        } else {
+            onEditQueueSync(run)
         }
     }
     
